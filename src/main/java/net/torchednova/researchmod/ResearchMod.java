@@ -1,7 +1,17 @@
 package net.torchednova.researchmod;
 
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.torchednova.researchmod.api.IRSAPI;
+import net.torchednova.researchmod.commands.ResearchVote;
+import net.torchednova.researchmod.commands.resetprogress;
 import net.torchednova.researchmod.research.ResearchController;
+import net.torchednova.researchmod.savedata.TargetDataStorage;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -58,14 +68,22 @@ public class ResearchMod {
     }
 
     @SubscribeEvent
-    private void onServerTick(ServerTickEvent event)
+    private void onServerTick(ServerTickEvent.Post event)
     {
-        if(ResearchController.voteTicks != -1)
+        if(ResearchController.voteTicks != -1 && ResearchController.currentVotes != 0)
         {
+            //LOGGER.info(ResearchController.voteTicks + " | " + ResearchController.tickTimeForVote);
             ResearchController.voteTicks++;
             if (ResearchController.voteTicks >= ResearchController.tickTimeForVote) {
-                ResearchController.SelectResearch();
+                new Thread(() -> { ResearchController.SelectResearch(event.getServer()); }).start();
             }
+        }
+
+        ResearchController.timenotchecked++;
+        if (ResearchController.timenotchecked >= ResearchController.tickstillcheck)
+        {
+            new Thread(() -> { ResearchController.checkIfDone(event.getServer()); }).start();
+            ResearchController.timenotchecked = 0;
         }
     }
 
@@ -75,13 +93,64 @@ public class ResearchMod {
 
     }
 
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
+    {
+        if (ResearchController.voteTicks != -1) {
+            LOGGER.info(String.valueOf(ResearchController.voteTicks));
+            Player p = event.getEntity();
+            if (p instanceof ServerPlayer) {
+                int timeleft = ((ResearchController.tickTimeForVote - ResearchController.voteTicks) / 20);
+                String msg = "";
+                if ((ResearchController.voteTicks == 0 || ResearchController.voteTicks == -1) && ResearchController.currentVotes == 0)
+                {
+                    msg = "Timer will start when the first person has voted";
+                }
+                else if (timeleft < 60)
+                {
+                    msg = String.valueOf(timeleft) + " Seconds Left";
+                }
+                else if (timeleft > 60 && timeleft < 3600)
+                {
+                    msg = String.valueOf(timeleft / 60) + " Minutes Left";
+                }
+                else
+                {
+                    msg = String.valueOf((timeleft / 60) /60) + " Hours Left";
+                }
+                CommandSourceStack css = p.createCommandSourceStack();
+                String finalMsg = msg;
+                css.sendSuccess(
+                        () -> Component.literal("Voting is open for the next research, you have " + finalMsg),
+                        false
+                );
+            }
+        }
+    }
+
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
-        ResearchController.init();
+        IRSAPI.init(TargetDataStorage.loadAPI(event.getServer()), TargetDataStorage.loadDispAPI(event.getServer()));
 
+        ResearchController.init(event.getServer());
+
+    }
+
+    @SubscribeEvent
+    public void onRegisterCommnads(RegisterCommandsEvent event)
+    {
+        ResearchVote.register(event.getDispatcher());
+        resetprogress.register(event.getDispatcher());
+    }
+
+    @SubscribeEvent
+    public void onServerStopping(ServerStoppingEvent event) {
+        // Do something when the server starts
+        LOGGER.info("HELLO from server starting");
+        ResearchController.closing(event.getServer());
     }
 }

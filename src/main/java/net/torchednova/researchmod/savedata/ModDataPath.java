@@ -24,4 +24,16 @@ public class ModDataPath {
     public static Path getcurvotesDataFile(MinecraftServer server) {
         return server.getWorldPath(net.minecraft.world.level.storage.LevelResource.ROOT).resolve("data").resolve("neoResearch").resolve("curvotes.json");
     }
+
+    public static Path getAPIKeyDataFile(MinecraftServer server) {
+        return server.getWorldPath(net.minecraft.world.level.storage.LevelResource.ROOT).resolve("data").resolve("neoResearch").resolve("apikey.json");
+    }
+
+    public static Path getDispAPIKeyDataFile(MinecraftServer server) {
+        return server.getWorldPath(net.minecraft.world.level.storage.LevelResource.ROOT).resolve("data").resolve("neoResearch").resolve("dispapikey.json");
+    }
+
+    public static Path getTickTimingsDataFile(MinecraftServer server) {
+        return server.getWorldPath(net.minecraft.world.level.storage.LevelResource.ROOT).resolve("data").resolve("neoResearch").resolve("ticktimings.json");
+    }
 }

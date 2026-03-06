@@ -12,7 +12,7 @@ import net.torchednova.researchmod.ChestUI.ChestUI;
 public class ResearchVote {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        dispatcher.register(Commands.literal("ViewShops")
+        dispatcher.register(Commands.literal("research")
             .then(Commands.argument("player", EntityArgument.player())
                 .executes(ResearchVote::OpenVoteMenu)
 

@@ -39,7 +39,7 @@ public class ChestUI {
     }
 
     public static void openMenu(Player player, SimpleContainer cont) {
-        player.openMenu(new SimpleMenuProvider((id, inv, p) -> new ResearchUI(id, inv, cont), Component.literal("Cast your vote for the next Research")));
+        player.openMenu(new SimpleMenuProvider((id, inv, p) -> new ResearchUI(id, inv, cont), Component.literal("Vote for the next Research")));
     }
 
     public static void openVoteMenu(Player player, int size, ServerLevel sl)
