@@ -230,7 +230,7 @@ public class ResearchUI extends ChestMenu {
         for (int i = 0; i < optionCount; i++)
         {
             String[] name = ResearchController.Options.get(i+ (4 * (pagenum - 1))).itemID.split(":");
-            item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "dirt"));
+            item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(name[0], name[1]));
             //if (item == null) item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "dirt"));
             itemStack = new ItemStack(item);
             itemStack.set(DataComponents.ITEM_NAME, Utils.Chat("&f" + ResearchController.Options.get(i+ (4 * (pagenum - 1))).displayname));

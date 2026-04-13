@@ -147,7 +147,9 @@ public class ResearchController {
 
         if (ResearchController.currentVotes >= Config.VotesToLowerTime.getAsInt())
         {
-            ResearchController.tickTimeForVote = (Config.LowerTimeForVote.getAsInt() * 60) * 20;
+            if ((Config.LowerTimeForVote.getAsInt() * 60) * 20 < ResearchController.tickTimeForVote) {
+                ResearchController.tickTimeForVote = (Config.LowerTimeForVote.getAsInt() * 60) * 20;
+            }
         }
 
         closing(p.getServer());
