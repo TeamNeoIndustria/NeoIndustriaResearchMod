@@ -195,6 +195,7 @@ public class ResearchController {
 
 
             Utils.tellAll("Voting has finish and " + current.displayname + " has started researching", server);
+
             //make call to API to set
             IRSAPI.setResearch(current.id);
             closing(server);
