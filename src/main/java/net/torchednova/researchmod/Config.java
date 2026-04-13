@@ -28,6 +28,13 @@ public class Config {
             .comment("The Amount of time in seconds between checks if research is done. Min: 1 Max: int32 max")
             .defineInRange("timetocheckdone", 10, 1, Integer.MAX_VALUE);
 
+    public static final ModConfigSpec.ConfigValue<String> ResearchWebEndpoint = BUILDER
+            .comment("URI for Research web api")
+            .define("ResearchWebEndpoint", "");
+
+    public static final ModConfigSpec.ConfigValue<String> ResarchWebApiKey = BUILDER
+            .comment("API key for Research web api")
+            .define("ResearchWebApiKey", "");
 
 
     static final ModConfigSpec SPEC = BUILDER.build();

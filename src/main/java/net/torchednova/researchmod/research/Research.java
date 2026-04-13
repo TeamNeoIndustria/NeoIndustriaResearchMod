@@ -1,5 +1,8 @@
 package net.torchednova.researchmod.research;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Research {
     public Research(int id, String name, String itemID, String displayname, String lore)
     {
@@ -17,4 +20,6 @@ public class Research {
     public String itemID;
     public String lore;
     public int votes;
+    public ResearchState state;
+    public List<Integer> dependencies = new ArrayList<>();
 }
