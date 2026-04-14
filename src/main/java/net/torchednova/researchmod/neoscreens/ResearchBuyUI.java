@@ -11,6 +11,8 @@ import xyz.neonetwork.neolib.textures.NeoTexture;
 
 import java.util.List;
 
+import static net.torchednova.researchmod.ResearchMod.LOGGER;
+
 
 public class ResearchBuyUI {
 
@@ -21,18 +23,19 @@ public class ResearchBuyUI {
 
 		NeoServerScreenGrid nssg = new NeoServerScreenGrid(20, 20, 2, 8,8);
 		nssg.addButtonWidget(0, 7, 8, 1, "close", Component.literal("Close"), null, false, (finalScreen, finalGrid) -> {
-			System.out.print("------------------------here____-------------------------------------------------------");
 			finalScreen.close(); });
 
 
-		List<Research> avResearch;// = ResearchAPI.getCompleteResearches();
-		avResearch = null;
+		List<Research> avResearch = ResearchAPI.getCompleteResearches();
+
+
 		if (avResearch == null)
 		{
 			nssg.addStringWidget(0, 1, 8, 6, "none", Component.literal("You do not have any available researches to purchase"), NeoStringAlign.Horizontal.CENTER, NeoStringAlign.Vertical.MIDDLE);
 		}
 		else
 		{
+			LOGGER.info(String.valueOf(avResearch.size()));
 			for (int i = 0; i < avResearch.size(); i++ )
 			{
 
