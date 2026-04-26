@@ -22,4 +22,10 @@ public class Research {
     public int votes;
     public ResearchState state;
     public List<Integer> dependencies = new ArrayList<>();
+
+    public String[] splitItemID()
+    {
+        return itemID.split(":");
+    }
+
 }

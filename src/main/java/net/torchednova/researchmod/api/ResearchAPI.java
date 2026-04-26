@@ -64,6 +64,7 @@ public class ResearchAPI {
 			List<Research> researchEntries = new ArrayList<>();
 			for (JsonElement entry : response.getDataNode().getAsJsonArray()) {
 				JsonObject jsonNode = entry.getAsJsonObject();
+				ResearchMod.LOGGER.info(jsonNode.toString() + " | " + entry.toString());
 				Research researchEntry = new Research(
 					jsonNode.get("stageID").getAsInt(),
 					jsonNode.get("stageIDName").getAsString(),
@@ -71,7 +72,7 @@ public class ResearchAPI {
 					jsonNode.get("displayName").getAsString(),
 					jsonNode.get("displayLore").getAsString()
 				);
-				researchEntry.state = ResearchState.fromStateID(jsonNode.get("stateID").getAsInt());
+				researchEntry.state = ResearchState.fromStateID(jsonNode.get("complete").getAsInt());
 				for (JsonElement dependency : jsonNode.get("dependencies").getAsJsonArray().asList()) {
 					researchEntry.dependencies.add(dependency.getAsInt());
 				}
@@ -79,7 +80,7 @@ public class ResearchAPI {
 			}
 			return researchEntries;
 		} catch (Exception e) {
-			ResearchMod.LOGGER.warn("ResearchAPI#getResearchTree failed to parse response");
+			ResearchMod.LOGGER.warn("ResearchAPI#getResearchTree failed to parse response: " + e.getMessage());
 			return null;
 		}
 	}
