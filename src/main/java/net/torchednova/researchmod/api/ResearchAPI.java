@@ -205,15 +205,18 @@ public class ResearchAPI {
 		}
 	}
 
-	public static boolean setResearch(int stageID) {
+	public static boolean setResearch(int stageID)
+	{
 		return setResearch(stageID, false) > 0;
 	}
 
-	public static boolean setResearchForce(int stageID) {
+	public static boolean setResearchForce(int stageID)
+	{
 		return setResearch(stageID, true) > 0;
 	}
 
-	public static boolean clearResearch() {
+	public static boolean clearResearch()
+	{
 		return setResearch(-1, true) == 0;
 	}
 
@@ -241,10 +244,45 @@ public class ResearchAPI {
 
 	}
 
+	public static PlayerResearchDetails getPlayerResearch(int stageID)
+	{
+		try {
+			APIResponse response = APIRequest.apiRequest(neoNetworkResearchEndpoint + "getplayerresearch", new HashMap<>() {{
+				put("apikey", apiKey);
+				put("stageID", String.valueOf(stageID));
+			}});
+			if (!response.getSuccess()) {
+				ResearchMod.LOGGER.warn("ResearchAPI#getPlayerResearch failed. Code: {}, Message: {}",
+					response.getStatusCode(), response.getStatusMessage());
+				return null;
+			}
 
-
-
-
-
-
+			JsonObject data = response.getDataNode().getAsJsonObject();
+			return new PlayerResearchDetails(
+				data.get("stageID").getAsInt(),
+				data.get("moneyCost").getAsInt(),
+				data.get("ItemTypeADisplayName").getAsString(),
+				new ResearchItem(
+					data.get("ItemA1ID").getAsString(),
+					data.get("ItemA1DisplayName").getAsString(),
+					data.get("ItemA1Count").getAsInt()
+				),
+				data.get("ItemTypeBDisplayName").getAsString(),
+				new ResearchItem(
+					data.get("ItemB1ID").getAsString(),
+					data.get("ItemB1DisplayName").getAsString(),
+					data.get("ItemB1Count").getAsInt()
+				),
+				data.get("ItemTypeCDisplayName").getAsString(),
+				new ResearchItem(
+					data.get("ItemC1ID").getAsString(),
+					data.get("ItemC1DisplayName").getAsString(),
+					data.get("ItemC1Count").getAsInt()
+				)
+			);
+		} catch (Exception e) {
+			ResearchMod.LOGGER.warn("ResearchAPI#getPlayerResearch failed to parse response");
+			return null;
+		}
+	}
 }
