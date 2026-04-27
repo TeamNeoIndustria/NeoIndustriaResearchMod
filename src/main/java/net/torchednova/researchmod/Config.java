@@ -20,7 +20,7 @@ public class Config {
             .comment("Min Time for a vote in mins after x amount of votes. Min: 5 Max: int32 max")
             .defineInRange("LowerTimeForVote", 60, 1, Integer.MAX_VALUE);
 
-    public static final ModConfigSpec.IntValue VotesToLowerTime = BUILDER
+    public static ModConfigSpec.IntValue VotesToLowerTime = BUILDER
             .comment("The Amount of votes to lower time for vote. Min: 1 Max: int32 max")
             .defineInRange("VotesToLowerTime", 5, 1, Integer.MAX_VALUE);
 

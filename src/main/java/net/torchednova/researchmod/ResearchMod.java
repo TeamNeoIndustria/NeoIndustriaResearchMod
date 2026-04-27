@@ -10,6 +10,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.torchednova.researchmod.api.IRSAPI;
 import net.torchednova.researchmod.commands.ResearchBuy;
 import net.torchednova.researchmod.commands.ResearchVote;
+import net.torchednova.researchmod.commands.SetCountCount;
 import net.torchednova.researchmod.commands.resetprogress;
 import net.torchednova.researchmod.research.ResearchController;
 import net.torchednova.researchmod.savedata.TargetDataStorage;
@@ -147,6 +148,7 @@ public class ResearchMod {
         ResearchVote.register(event.getDispatcher());
         resetprogress.register(event.getDispatcher());
         ResearchBuy.register(event.getDispatcher());
+        SetCountCount.register(event.getDispatcher());
     }
 
     @SubscribeEvent
