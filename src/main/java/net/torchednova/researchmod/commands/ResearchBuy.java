@@ -9,6 +9,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.torchednova.researchmod.ChestUI.ChestUI;
+import net.torchednova.researchmod.ResearchMod;
 import net.torchednova.researchmod.neoscreens.ResearchBuyUI;
 
 public class ResearchBuy {
@@ -25,6 +26,7 @@ public class ResearchBuy {
 		Player player = EntityArgument.getPlayer(context, "player");
 
 		ResearchBuyUI.MainScreen((ServerPlayer) player);
+		//ResearchMod.LOGGER.info("command firing");
 		return 1;
 	}
 }

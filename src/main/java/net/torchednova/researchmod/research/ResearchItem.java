@@ -10,4 +10,15 @@ public class ResearchItem {
 		this.displayName = displayName;
 		this.count = count;
 	}
+
+	public boolean isValid()
+	{
+		if (count == 0 || this.itemID.isEmpty() || this.displayName.isEmpty())
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 }

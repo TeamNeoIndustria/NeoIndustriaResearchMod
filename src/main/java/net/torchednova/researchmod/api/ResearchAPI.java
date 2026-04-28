@@ -64,7 +64,7 @@ public class ResearchAPI {
 			List<Research> researchEntries = new ArrayList<>();
 			for (JsonElement entry : response.getDataNode().getAsJsonArray()) {
 				JsonObject jsonNode = entry.getAsJsonObject();
-				ResearchMod.LOGGER.info(jsonNode.toString() + " | " + entry.toString());
+				//ResearchMod.LOGGER.info(jsonNode.toString() + " | " + entry.toString());
 				Research researchEntry = new Research(
 					jsonNode.get("stageID").getAsInt(),
 					jsonNode.get("stageIDName").getAsString(),

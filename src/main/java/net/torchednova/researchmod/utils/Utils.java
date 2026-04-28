@@ -5,6 +5,9 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.torchednova.researchmod.ResearchMod;
 import net.torchednova.researchmod.research.Research;
 
 import javax.swing.*;
@@ -58,6 +61,20 @@ public class Utils {
 
         return playerHasDependencies(sp, r, res);
     }
+
+    public static boolean playerHasItems(ServerPlayer sp, ItemStack is, int count)
+    {
+        if (sp.getInventory().findSlotMatchingItem(is) == -1) return false;
+		return sp.getInventory().getItem(sp.getInventory().findSlotMatchingItem(is)).getCount() <= count;
+	}
+
+    public static boolean playerTakeItems(ServerPlayer sp, ItemStack is, int count)
+    {
+        if (sp.getInventory().findSlotMatchingItem(is) == -1) return false;
+        ItemStack taken = sp.getInventory().removeItem(sp.getInventory().findSlotMatchingItem(is), count);
+		return taken != ItemStack.EMPTY;
+	}
+
 
 
 
