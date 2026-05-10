@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
+import net.torchednova.researchmod.ResearchMod;
 import net.torchednova.researchmod.research.Research;
 import net.torchednova.researchmod.research.ResearchController;
 import net.torchednova.researchmod.utils.Utils;
@@ -58,7 +59,7 @@ public class ResearchUI extends ChestMenu {
         {
             item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "red_wool"));
             itemStack = new ItemStack(item);
-            itemStack.set(DataComponents.ITEM_NAME, Utils.Chat("&Previous"));
+            itemStack.set(DataComponents.ITEM_NAME, Utils.Chat("&fPrevious"));
             tag = new CompoundTag();
             tag.putString("vote:tag", "Prev");
             itemStack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
@@ -230,6 +231,7 @@ public class ResearchUI extends ChestMenu {
         for (int i = 0; i < optionCount; i++)
         {
             String[] name = ResearchController.Options.get(i+ (4 * (pagenum - 1))).itemID.split(":");
+            //item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "dirt"));
             item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(name[0], name[1]));
             //if (item == null) item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "dirt"));
             itemStack = new ItemStack(item);
@@ -292,6 +294,7 @@ public class ResearchUI extends ChestMenu {
         if (data == null) return;
         CompoundTag yag = data.copyTag();
         String name = yag.getString("vote:tag");
+        ResearchMod.LOGGER.info(name);
 
         if (name.isEmpty()) return;
         if (player.getServer() == null) return;
@@ -324,19 +327,26 @@ public class ResearchUI extends ChestMenu {
         else {
             int nameInt = -1;
             try {
-                nameInt = Integer.valueOf(name);
+                nameInt = Integer.parseInt(name);
             }
             catch(Exception e) {
                 return;
             }
 
 
-            if (ResearchController.playersVotes.contains(player.getUUID())) return;
+            if (ResearchController.playersVotes.contains(player.getUUID())) {
+                ResearchMod.LOGGER.info("Already Voted");
+                return;
+
+            }
 
             //LOGGER.info(String.valueOf(ResearchController.Finshed.size()));
             for (int i = 0; i < ResearchController.Finshed.size(); i++)
             {
-                if (ResearchController.Finshed.get(i).id == nameInt) return;
+                if (ResearchController.Finshed.get(i).id == nameInt) {
+                    ResearchMod.LOGGER.info("That research is already finished");
+                    return;
+                }
             }
 
             ResearchController.playerVote(player, nameInt);

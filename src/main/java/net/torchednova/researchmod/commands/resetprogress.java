@@ -26,7 +26,7 @@ public class resetprogress {
             ResearchController.setFinished();
             ResearchController.setOptions();
 
-            ResearchController.voteTicks = 0;
+            ResearchController.voteTicks = -1;
             ResearchController.currentVotes = 0;
             ResearchController.playersVotes = new ArrayList<>();
 

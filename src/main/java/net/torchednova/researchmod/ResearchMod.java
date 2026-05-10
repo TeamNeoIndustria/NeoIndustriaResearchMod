@@ -43,6 +43,8 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import xyz.neonetwork.neolib.textures.NeoTexture;
+import xyz.neonetwork.neolib.utilities.NeoNotify;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ResearchMod.MODID)
@@ -98,9 +100,9 @@ public class ResearchMod {
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event)
     {
+        Player p = event.getEntity();
         if (ResearchController.voteTicks != -1) {
             LOGGER.info(String.valueOf(ResearchController.voteTicks));
-            Player p = event.getEntity();
             if (p instanceof ServerPlayer) {
                 int timeleft = ((ResearchController.tickTimeForVote - ResearchController.voteTicks) / 20);
                 String msg = "";
@@ -126,6 +128,12 @@ public class ResearchMod {
                         () -> Component.literal("Voting is open for the next research, you have " + finalMsg),
                         false
                 );
+            }
+        }
+        else
+        {
+            if (p instanceof ServerPlayer sp) {
+                NeoNotify.sendToast(sp, Component.literal("Voting is currently open"), Component.literal("for new research"), NeoTexture.RESEARCH);
             }
         }
     }
