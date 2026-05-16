@@ -1,5 +1,8 @@
 package net.torchednova.researchmod.neoscreens;
 
+import com.alessandro.astages.command.AStagesServerCommands;
+import com.alessandro.astages.config.AStagesCommon;
+import com.alessandro.astages.util.AStagesUtil;
 import com.mojang.brigadier.ParseResults;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -84,14 +87,14 @@ public class ResearchBuyUI {
 			//nssg.addItemWidget(0, 0, 5, 5, "CakeItem", BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "cake")));
 
 			PlayerResearchDetails prd = ResearchAPI.getPlayerResearch(avResearch.get(i).id);
-			String unlockCost = "Cost: "+ prd.moneyCost + " Items: " + prd.itemA1.count + " " + prd.itemA1.displayName;
-			if (prd.itemB1.isValid()) unlockCost += ", " + prd.itemB1.count + " " + prd.itemB1.displayName;
-			if (prd.itemC1.isValid()) unlockCost += ", " + prd.itemC1.count + " " + prd.itemC1.displayName;
+			String unlockCost = "Cost: "+ prd.moneyCost + "¢\nItems: " + prd.itemA1.count + " " + prd.itemA1.displayName;
+			if (prd.itemB1.isValid()) unlockCost += "\n" + prd.itemB1.count + " " + prd.itemB1.displayName;
+			if (prd.itemC1.isValid()) unlockCost += "\n" + prd.itemC1.count + " " + prd.itemC1.displayName;
 
 			if (i % 2 == 0)
 			{
-				nssg.addItemWidget(0, 1 + (((i - (pageSize * page)) / 2) * 2), 1, 1, "image" + i, BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "dirt")));
-				//nssg.addItemWidget(0, 1 + (((i - (pageSize * page)) / 2) * 2), 1, 1, "image" + i, BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(avResearch.get(i).splitItemID()[0], avResearch.get(i).splitItemID()[1])));
+				//nssg.addItemWidget(0, 1 + (((i - (pageSize * page)) / 2) * 2), 1, 1, "image" + i, BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", "dirt")));
+				nssg.addItemWidget(0, 1 + (((i - (pageSize * page)) / 2) * 2), 1, 1, "image" + i, BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(avResearch.get(i).splitItemID()[0], avResearch.get(i).splitItemID()[1])));
 				int finalI = i;
 				nssg.addButtonWidget(1, 1 + (((i - (pageSize * page)) / 2) * 2), 3, 1, avResearch.get(i).displayname, Component.literal(avResearch.get(i).displayname), Component.literal(avResearch.get(i).lore + "\n" + unlockCost), false, (finalScreen, finalGrid) -> { unlockStage(sp, avResearch.get(finalI)); MainScreen(sp, page);});
 			}
@@ -235,12 +238,12 @@ public class ResearchBuyUI {
 
 
 
-		var disp = sp.getServer().getCommands().getDispatcher();
-		ParseResults<CommandSourceStack> parse = disp.parse("astages add " + sp.getDisplayName().getString() + " " + res.name + " true true", css);
+		//var disp = sp.getServer().getCommands().getDispatcher();
+		//ParseResults<CommandSourceStack> parse = disp.parse("", css);
 
+		sp.getServer().getCommands().performPrefixedCommand(sp.getServer().createCommandSourceStack(), "astages add " + sp.getScoreboardName() + " " + res.name + " true true");
 
-
-		sp.getServer().getCommands().performCommand(parse, "");
+		//sp.getServer().getCommands().performCommand(parse, "astages add " + sp.getDisplayName().getString() + " " + res.name + " true true");
 		NeoNotify.sendTitle(sp, Component.literal("Unlocked " + res.displayname).withStyle(ChatFormatting.GREEN), null);
 		//NeoNotify.playSound(sp, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.MASTER, 10.0f, 1.f);
 		sp.serverLevel().playSound(

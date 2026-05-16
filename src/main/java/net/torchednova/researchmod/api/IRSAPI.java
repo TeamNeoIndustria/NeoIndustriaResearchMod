@@ -1,10 +1,17 @@
 package net.torchednova.researchmod.api;
 
+import com.google.gson.JsonElement;
+import xyz.neonetwork.neolib.api.APIRequest;
+import xyz.neonetwork.neolib.api.APIResponse;
+import xyz.neonetwork.neolib.server.NeoLibServer;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+
 import static net.torchednova.researchmod.ResearchMod.LOGGER;
 
 public class IRSAPI {
@@ -105,41 +112,23 @@ public class IRSAPI {
         }
     }
 
-    public static String checkCurrentResearch() {
-        try {
-            URL obj = new URL("https://research.neonetwork.xyz/api/getresearch");
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+    public static boolean checkCurrentResearch() {
 
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-            con.setDoOutput(true);
-
-            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-                wr.writeBytes(twoHyphens + boundary + LINE_END);
-                wr.writeBytes("Content-Disposition: form-data; name=\"apikey\"" + LINE_END);
-                wr.writeBytes(LINE_END);
-                wr.writeBytes(DispApiKey + LINE_END);
-
-                //wr.writeBytes(LINE_END);
-                //wr.writeBytes(twoHyphens + boundary + twoHyphens + LINE_END);
-                wr.flush();
-            }
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            String inputLine;
-            StringBuilder response = new StringBuilder();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            in.close();
-            return response.toString();
-        } catch (Exception exception) {
-            //IndustriaDailies.LOGGER.error("Unable complete request [{}] [{}] [{}]", target.getName().getString(), amount, ref);
-            exception.printStackTrace();
-            return null;
+        APIResponse rep = APIRequest.apiRequest("https://research.neonetwork.xyz/api/getresearch", new HashMap<>());
+        if (rep.getDataNode().getAsJsonObject().get("success").getAsString() == "true")
+        {
+            return true;
         }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static JsonElement getCurrentResearch() {
+
+        APIResponse rep = APIRequest.apiRequest("https://research.neonetwork.xyz/api/getresearch", new HashMap<>());
+        return rep.getDataNode();
     }
 
     public static String getAllResearch() {

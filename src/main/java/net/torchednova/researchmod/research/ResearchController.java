@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.torchednova.researchmod.Config;
+import net.torchednova.researchmod.ResearchMod;
 import net.torchednova.researchmod.api.IRSAPI;
 import net.torchednova.researchmod.savedata.TargetDataStorage;
 import net.torchednova.researchmod.utils.Utils;
@@ -40,11 +41,7 @@ public class ResearchController {
 
     public static void init(MinecraftServer server)
     {
-        Finshed = TargetDataStorage.load(server);
-        Options = TargetDataStorage.loadOptions(server);
-        current = TargetDataStorage.loadCurrent(server);
-        currentVotes = TargetDataStorage.loadCurVotes(server);
-        playersVotes = TargetDataStorage.loadPlayerVoted(server);
+        load(server);
 
         setCurrent();
 
@@ -59,6 +56,7 @@ public class ResearchController {
 
         if (Options.isEmpty())
         {
+            ResearchMod.LOGGER.info("here3");
             setOptions();
         }
         if (current == null || current.name == null)
@@ -67,6 +65,15 @@ public class ResearchController {
         }
 
         closing(server);
+    }
+
+    public static void load(MinecraftServer server)
+    {
+        Finshed = TargetDataStorage.load(server);
+        Options = TargetDataStorage.loadOptions(server);
+        current = TargetDataStorage.loadCurrent(server);
+        currentVotes = TargetDataStorage.loadCurVotes(server);
+        playersVotes = TargetDataStorage.loadPlayerVoted(server);
     }
 
     public static void closing(MinecraftServer server)
@@ -100,18 +107,18 @@ public class ResearchController {
 
         //LOGGER.info(current.name);
 
-        String SJSON = IRSAPI.checkCurrentResearch();
-        JsonObject json = JsonParser.parseString(SJSON).getAsJsonObject();
+        boolean SJSON = IRSAPI.checkCurrentResearch();
+        //JsonObject json = JsonParser.parseString(SJSON).getAsJsonObject();
 
         //System.out.print(json);
 
 
 
-        if (Objects.equals(json.get("success").getAsString(), "false"))
+        if (SJSON == false)
         {
             return;
         }
-        else if (json.get("data").getAsJsonObject().get("complete").getAsInt() == 1)
+        else
         {
             finishedCurrentResearch();
             Utils.tellAll("Research has completed please vote for the next", server);
@@ -123,6 +130,7 @@ public class ResearchController {
     {
         Finshed.add(current);
         current = null;
+        ResearchMod.LOGGER.info("here2");
         setOptions();
     }
 
@@ -145,12 +153,18 @@ public class ResearchController {
             }
         }
 
+        if (voteTicks == -1)
+        {
+            voteTicks = 0;
+        }
+
         if (ResearchController.currentVotes >= Config.VotesToLowerTime.getAsInt())
         {
             if ((Config.LowerTimeForVote.getAsInt() * 60) * 20 < ResearchController.tickTimeForVote) {
                 ResearchController.tickTimeForVote = (Config.LowerTimeForVote.getAsInt() * 60) * 20;
             }
         }
+
 
         closing(p.getServer());
     }
@@ -165,9 +179,11 @@ public class ResearchController {
         {
             maxCount += Options.get(i).votes;
         }
+        ResearchMod.LOGGER.info(String.valueOf(maxCount));
 
         if (maxCount == 0)
         {
+            ResearchMod.LOGGER.info("here1");
             setOptions();
             return;
         }
@@ -180,6 +196,7 @@ public class ResearchController {
             if (maxCount < Options.get(i).votes)
             {
                 selected = Options.get(i);
+                ResearchMod.LOGGER.info(selected.name + " selected from vote");
                 break;
             }
         }
@@ -221,7 +238,7 @@ public class ResearchController {
 
         //LOGGER.info(json.getAsString());
 
-        Options = new ArrayList<>();
+        Finshed = new ArrayList<>();
         JsonObject curobj;
 
 
@@ -240,13 +257,12 @@ public class ResearchController {
 
     public static void setCurrent()
     {
-        String json = IRSAPI.checkCurrentResearch();
-        JsonObject j = JsonParser.parseString(json).getAsJsonObject();
-        if (j.get("success").getAsBoolean() == false) {
+        boolean json = IRSAPI.checkCurrentResearch();
+        if (json == false) {
             current = null;
             return;
         }
-        JsonObject jObj = j.get("data").getAsJsonObject();
+        JsonObject jObj = IRSAPI.getCurrentResearch().getAsJsonObject();
 
         //System.out.print(jObj);
 

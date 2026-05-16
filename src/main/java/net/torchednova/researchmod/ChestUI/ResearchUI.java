@@ -169,7 +169,8 @@ public class ResearchUI extends ChestMenu {
             item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(name[0], name[1]));
             itemStack = new ItemStack(item);
             itemStack.set(DataComponents.ITEM_NAME, Utils.Chat("&f" + ResearchController.Options.get(i+ (4 * (pagenum - 1))).displayname));
-            im = new ItemLore(List.of(Utils.Chat("&f" + ResearchController.Options.get(i+ (4 * (pagenum - 1))).lore), Utils.Chat("( " + (ResearchController.Options.get(i+ (4 * (pagenum - 1))).votes / ResearchController.currentVotes) * 100 + " Percent Chance)")));
+            im = new ItemLore(List.of(Utils.Chat("&f" + ResearchController.Options.get(i+ (4 * (pagenum - 1))).lore), Utils.Chat("( " + ("&fVotes: " + ResearchController.Options.get(i+ (4 * (pagenum - 1))).votes))));
+            ResearchMod.LOGGER.info(ResearchController.Options.get(i+ (4 * (pagenum - 1))).id + " | " + ResearchController.Options.get(i+ (4 * (pagenum - 1))).votes);
             itemStack.set(DataComponents.LORE, im);
             tag = new CompoundTag();
             tag.putString("vote:tag", String.valueOf(ResearchController.Options.get(i+ (4 * (pagenum - 1))).id));
@@ -237,6 +238,7 @@ public class ResearchUI extends ChestMenu {
             itemStack = new ItemStack(item);
             itemStack.set(DataComponents.ITEM_NAME, Utils.Chat("&f" + ResearchController.Options.get(i+ (4 * (pagenum - 1))).displayname));
             im = new ItemLore(List.of(Utils.Chat("&f" + ResearchController.Options.get(i+ (4 * (pagenum - 1))).lore), Utils.Chat("&fVotes: " + ResearchController.Options.get(i).votes)));
+            ResearchMod.LOGGER.info(ResearchController.Options.get(i+ (4 * (pagenum - 1))).id + " | " + ResearchController.Options.get(i+ (4 * (pagenum - 1))).votes);
             itemStack.set(DataComponents.LORE, im);
             tag = new CompoundTag();
             tag.putString("vote:tag", String.valueOf(ResearchController.Options.get(i+ (4 * (pagenum - 1))).id));
@@ -330,15 +332,18 @@ public class ResearchUI extends ChestMenu {
                 nameInt = Integer.parseInt(name);
             }
             catch(Exception e) {
+                ResearchMod.LOGGER.info("Failed");
                 return;
             }
 
+            ResearchMod.LOGGER.info("here1");
 
             if (ResearchController.playersVotes.contains(player.getUUID())) {
                 ResearchMod.LOGGER.info("Already Voted");
                 return;
 
             }
+            ResearchMod.LOGGER.info("here2");
 
             //LOGGER.info(String.valueOf(ResearchController.Finshed.size()));
             for (int i = 0; i < ResearchController.Finshed.size(); i++)
@@ -348,6 +353,7 @@ public class ResearchUI extends ChestMenu {
                     return;
                 }
             }
+            ResearchMod.LOGGER.info("here3");
 
             ResearchController.playerVote(player, nameInt);
             player.closeContainer();
@@ -362,6 +368,8 @@ public class ResearchUI extends ChestMenu {
                         false
                 );
             }
+
+            ResearchMod.LOGGER.info("here4");
 
         }
         return;

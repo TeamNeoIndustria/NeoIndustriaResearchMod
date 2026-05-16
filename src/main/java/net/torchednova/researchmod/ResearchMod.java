@@ -74,6 +74,7 @@ public class ResearchMod {
     @SubscribeEvent
     private void onServerTick(ServerTickEvent.Post event)
     {
+        //LOGGER.info(ResearchController.voteTicks + " | " + ResearchController.currentVotes);
         if(ResearchController.voteTicks != -1 && ResearchController.currentVotes != 0)
         {
             //LOGGER.info(ResearchController.voteTicks + " | " + ResearchController.tickTimeForVote);
@@ -132,8 +133,10 @@ public class ResearchMod {
         }
         else
         {
-            if (p instanceof ServerPlayer sp) {
-                NeoNotify.sendToast(sp, Component.literal("Voting is currently open"), Component.literal("for new research"), NeoTexture.RESEARCH);
+            if (ResearchController.current == null) {
+                if (p instanceof ServerPlayer sp) {
+                    NeoNotify.sendToast(sp, Component.literal("Voting is currently open"), Component.literal("for new research"), NeoTexture.RESEARCH);
+                }
             }
         }
     }
